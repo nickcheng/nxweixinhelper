@@ -8,7 +8,7 @@ import csv, time
 from config import *
 from weixinclient import *
 
-@route('/')
+@route('/', ['GET', 'POST'])
 def index():
   if request.query.signature and request.query.timestamp and request.query.nonce:
     weixin = WeiXin.on_connect(
@@ -20,8 +20,10 @@ def index():
     if weixin.validate():
       if request.query.echostr:
         return request.query.echostr
-      else:
-        weixin = WeiXin.on_message(request.POST)
+      elif request.method == 'POST':
+        print request.body.readlines()[0]
+
+        weixin = WeiXin.on_message(request.body.readlines()[0])
         j = weixin.to_json()
 
         f = open('log.txt', 'w')
