@@ -21,15 +21,14 @@ def index():
       if request.query.echostr:
         return request.query.echostr
       elif request.method == 'POST':
-        print request.body.readlines()[0]
-
         weixin = WeiXin.on_message(request.body.readlines()[0])
         j = weixin.to_json()
 
-        f = open('log.txt', 'w')
+        f = open('log.txt', 'a')
         wr = csv.writer(f)
         statusList = [j['ToUserName'], j['FromUserName'], j['CreateTime'], j['MsgType'], j['Content'], j['MsgId']]
         wr.writerow([(isinstance(v,unicode) and v.encode('utf8') or v) for v in statusList])
+        f.close()
 
         weixinReply = WeiXin()
         result = weixinReply.to_xml(
