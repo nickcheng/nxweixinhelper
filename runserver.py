@@ -26,7 +26,7 @@ def index():
       if request.query.echostr:
         return request.query.echostr
       elif request.method == 'POST':
-        ll(request.body.readlines()[0])
+        ll(''.join(request.body.readlines()))
         weixin = WeiXin.on_message(request.body.readlines()[0])
         j = weixin.to_json()
         ll('Converted to json')
