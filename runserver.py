@@ -31,7 +31,7 @@ def index():
         weixin = WeiXin.on_message(content)
         j = weixin.to_json()
 
-        f = open('log.txt', 'a')
+        f = open('log.csv', 'a')
         wr = csv.writer(f)
         statusList = [j['ToUserName'], j['FromUserName'], j['CreateTime'], j['MsgType'], j['Content'], j['MsgId']]
         wr.writerow([(isinstance(v,unicode) and v.encode('utf8') or v) for v in statusList])
@@ -43,7 +43,7 @@ def index():
           from_user_name = j['ToUserName'],
           create_time = int(time.time()),
           msg_type = 'text',
-          content = u'真的谢谢你哟!',
+          content = u'下一个版本正在疯狂开发中, 期待哟... ',
           func_flag = 0)
 
         return result
