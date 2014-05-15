@@ -56,3 +56,5 @@ docs/_build/
 config.py
 
 log.txt
+
+log.csv

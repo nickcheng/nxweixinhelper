@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import bottle
-from bottle import route, request
-import csv, time
+from bottle import route, request, template
+import csv, time, os
 
 from config import *
 from weixinclient import *
@@ -13,6 +13,16 @@ def ll(i):
   f.write(i)
   f.write('\r\n')
   f.close()
+
+def getCSVFiles():
+  curPath = os.getcwd()
+  fileList = os.listdir(curPath)
+  csvFiles = []
+  for f in fileList:
+    if f.endswith('.csv'):
+      csvFiles.append(os.path.join(curPath, f))
+
+  return sorted(csvFiles)
 
 @route('/', ['GET', 'POST'])
 def index():
@@ -49,7 +59,14 @@ def index():
         return result
 
   # Last line
-  return 'Here'
+  params = {}
+  params['csv'] = getCSVFiles()
+  return template('index.tpl', params = params)
+  
+@route('/download')
+def download():
+  fn = request.query.fn
+  return static_file(fn, root = './', download = fn)
 
 # Run Server
 if __name__ == '__main__':
