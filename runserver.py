@@ -3,13 +3,14 @@
 
 import bottle
 from bottle import route, request
+import csv, time
 
 from config import *
 from weixinclient import *
 
 @route('/')
 def index():
-  if len(request.query) == 4:
+  if request.query.signature and request.query.timestamp and request.query.nonce:
     weixin = WeiXin.on_connect(
       token = WEIXINTOKEN,
       timestamp = request.query.timestamp,
@@ -17,9 +18,30 @@ def index():
       signature = request.query.signature,
       echostr = request.query.echostr)
     if weixin.validate():
-      return request.query.echostr
+      if request.query.echostr:
+        return request.query.echostr
+      else:
+        weixin = WeiXin.on_message(request.POST)
+        j = weixin.to_json()
 
-  return 'WX'
+        f = open('log.txt', 'w')
+        csv.writer(f)
+        statusList = [j[ToUserName], j[FromUserName], j[CreateTime], j[MsgType], j[Content], j[MsgId]]
+        wr.writerow([(isinstance(v,unicode) and v.encode('utf8') or v) for v in statusList])
+
+        weixinReply = WeiXin()
+        result = weixinReply.to_xml(
+          to_user_name = j[FromUserName],
+          from_user_name = j[ToUserName],
+          create_time = int(time.time()),
+          msg_type = 'text',
+          content = u'真的谢谢你哟!',
+          func_flag = 0)
+
+        return result
+
+  # Last line
+  return 'Here'
 
 # Run Server
 if __name__ == '__main__':
