@@ -12,6 +12,7 @@ def ll(i):
   f = open('xxx.txt', 'a')
   f.write(i)
   f.write('\r\n')
+  f.close()
 
 @route('/', ['GET', 'POST'])
 def index():
@@ -26,10 +27,9 @@ def index():
       if request.query.echostr:
         return request.query.echostr
       elif request.method == 'POST':
-        ll(''.join(request.body.readlines()))
-        weixin = WeiXin.on_message(request.body.readlines()[0])
+        content = ''.join(request.body.readlines())
+        weixin = WeiXin.on_message(content)
         j = weixin.to_json()
-        ll('Converted to json')
 
         f = open('log.txt', 'a')
         wr = csv.writer(f)
