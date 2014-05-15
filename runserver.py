@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import bottle
-from bottle import route, request, template
+from bottle import route, request, template, static_file
 import csv, time, os
 
 from config import *
