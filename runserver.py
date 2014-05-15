@@ -27,14 +27,14 @@ def index():
         j = weixin.to_json()
 
         f = open('log.txt', 'w')
-        csv.writer(f)
-        statusList = [j[ToUserName], j[FromUserName], j[CreateTime], j[MsgType], j[Content], j[MsgId]]
+        wr = csv.writer(f)
+        statusList = [j['ToUserName'], j['FromUserName'], j['CreateTime'], j['MsgType'], j['Content'], j['MsgId']]
         wr.writerow([(isinstance(v,unicode) and v.encode('utf8') or v) for v in statusList])
 
         weixinReply = WeiXin()
         result = weixinReply.to_xml(
-          to_user_name = j[FromUserName],
-          from_user_name = j[ToUserName],
+          to_user_name = j['FromUserName'],
+          from_user_name = j['ToUserName'],
           create_time = int(time.time()),
           msg_type = 'text',
           content = u'真的谢谢你哟!',
